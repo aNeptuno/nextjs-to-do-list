@@ -1,11 +1,19 @@
-'use client';
+/* 'use client';
+import { useState, useEffect } from 'react'; */
 
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaTrashCan } from 'react-icons/fa6';
+import DeleteTask from '../components/DeleteTask';
 
-export default function TaskList() {
-	const [tasks, setTasks] = useState([]);
+async function getTasks() {
+	const res = await fetch('http://localhost:3000/api/tasks', {
+		cache: 'no-store',
+	});
+	const tasks = await res.json();
+	return tasks;
+}
+
+export default async function TaskList() {
+	/* const [tasks, setTasks] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -21,25 +29,16 @@ export default function TaskList() {
 		};
 
 		getTasks();
-	}, []);
+	}, []); */
+
+	//const { data } = await axios.get('/api/tasks');
+	const tasks = await getTasks();
 
 	const parsePriority = priority => {
 		if (priority === '1') return 'Medium';
 		else if (priority === '2') return 'Hard';
 		else return 'Low';
 	};
-
-	async function deleteTask(taskId) {
-		try {
-			const response = await axios.delete(`/api/tasks?id=${taskId}`);
-			console.log('Deleted task:', response.data);
-		} catch (error) {
-			console.error(
-				'Error deleting task:',
-				error.response?.data || error.message
-			);
-		}
-	}
 
 	return (
 		<table className="text-gray-900 dark:text-gray-300 w-full">
@@ -52,22 +51,19 @@ export default function TaskList() {
 				</tr>
 			</thead>
 			<tbody>
-				{!loading &&
+				{
+					/* !loading && */
 					tasks.map(task => (
 						<tr key={task.id}>
 							<td>{task.name}</td>
 							<td>{task.description}</td>
 							<td>{parsePriority(task.priority)}</td>
 							<td className="text-center">
-								<button
-									onClick={() => deleteTask(task.id)}
-									className="bg-red-600 text-white rounded p-2 hover:bg-red-700 transition duration-200"
-								>
-									<FaTrashCan size={18} />
-								</button>
+								<DeleteTask />
 							</td>
 						</tr>
-					))}
+					))
+				}
 			</tbody>
 		</table>
 	);
