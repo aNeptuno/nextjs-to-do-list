@@ -8,7 +8,7 @@ export default function ThemeProvider({ children }) {
 
 	useEffect(() => {
 		const theme = localStorage.getItem('theme');
-		setTheme(theme ?? 'light');
+		setTheme(theme ?? theme);
 	}, []);
 
 	useEffect(() => {
